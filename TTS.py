@@ -35,6 +35,9 @@ class TTS:
         elif self.service == "piper":
             from TTS_apis.piper_api import PiperTTSClient
             self.tts_client = PiperTTSClient(verbose=self.verbose)
+        elif self.service == "silero":
+            from TTS_apis.silero_api import SileroTTSClient
+            self.tts_client = SileroTTSClient(verbose=self.verbose)            
         else:
             raise ValueError("Unsupported TTS engine configured")
 
