@@ -1,75 +1,83 @@
-# Welcome to AlwaysReddy 🔊
-Hey, I'm Josh, the creator of AlwaysReddy. I am still a little bit of a noob when it comes to programming and I'm really trying to develop my skills over the next year, I'm treating this project as an attempt to better develop my skills, with that in mind I would really appreciate it if you could point out issues and bad practices in my code (of which I'm sure there will be plenty). I would also appreciate if you would make your own improvements to the project so I can learn from your changes. Twitter: https://twitter.com/MindofMachine1
+# Welcome to Russian version of AlwaysReddy 🔊
+*English:*
+This is just a fork of great app https://github.com/ILikeAI/AlwaysReddy. Please support and star it!
 
-Contact me: joshlikesai@gmail.com
+*Russian:*
+Сейчас это лишь форк отличного скрипта https://github.com/ILikeAI/AlwaysReddy. Поддержите оригинальный проект звездочкой!
 
-If you think this project is cool and you want to say thanks, feel free to buy me a coffee if you can afford it. I love coffee...
+Задача проекта минимум:
+- Подключение всех известных локальных SST/TSS библиотек для русского языка в существующий код.
 
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/ilikeai)
+Задача проекта максимум:
+- Создать минимального голосового помощника на русском языке, который запускается на компьютерах с 8 GB VRAM с простым интерфейса чата или однокнопочным деплоем на своих серверах.
+
+Для этого планируется:
+- Подключение всех известных локальных SST/TTS библиотек для русского языка.
+- Создание STT/TTS/ LLM (7B) арен, специфичных для русского языка, чтобы выяснить лучшую по Elo рейтингу.
+- Тренировка русского голоса для Piper TTS.
+
+Полная инструкция по пользованию доступна в оригинальном репозитории.
+Здесь размещен лишь частичный перевод авторского readme.
 
 
-**Pull Requests Welcome!**
+## Разделы
+- [Meet AlwaysReddy](#Встречайте-AlwaysReddy)
+- [Поддерживаемые серверы LLM](#Поддерживаемые-провайдеры-LLM)
+- [Поддерживаемые системы TTS](#Поддерживаемые-системы-TTS)
+- [Настройка](#настройка)
+- [Известные проблемы](#Известные-проблемы)
+- [Дополнительные логи](#Дополнительные-логи)
 
-## Sections
-- [Meet AlwaysReddy](#meet-alwaysreddy)
-- [Supported LLM servers](#supported-llm-servers)
-- [Supported TTS systems](#supported-tts-systems)
-- [Setup](#setup)
-- [Known Issues](#known-issues)
-- [Troubleshooting](#troubleshooting)
-- [How to](#how-to)
+## Встречайте AlwaysReddy
+AlwaysReddy — простой помощник LLM с идеальным пользовательским интерфейсом… Неа!
+Вы взаимодействуете с ним полностью с помощью горячих клавиш, он может легко читать или записывать в буфер обмена.
+Это похоже на то, что на вашем компьютере всегда работает голосовой ChatGPT: вы просто нажимаете горячую клавишу, и он выслушивает любые ваши вопросы, нет необходимости менять местами окна или вкладки, и если вы хотите добавить в него дополнительный текст, просто скопируйте текст и дважды нажмите горячую клавишу!
 
-## Meet AlwaysReddy 
-AlwaysReddy is a simple LLM assistant with the perfect amount of UI... None!
-You interact with it entirely using hotkeys, it can easily read from or write to your clipboard.
-It's like having voice ChatGPT running on your computer at all times, you just press a hotkey and it will listen to any questions you have, no need to swap windows or tabs, and if you want to give it context of some extra text, just copy the text and double tap the hotkey! 
+**демо видео работы** https://www.reddit.com/r/LocalLLaMA/comments/1ca510h/voice_chatting_with_llama_3_8b/
 
-Join the discord: https://discord.gg/su44drSBzb
+### Функции:
+Вы взаимодействуете с AlwaysReddy с помощью горячих клавиш. Что он может:
+- Голосовой чат через TTS и STT (в том числе и локальные) 
+- Чтение из буфера обмена (с помощью быстрого двойного нажатия R + Ctrl + Alt + R + R). ПРИМЕЧАНИЕ. В Linux есть другая горячая клавиша!
+- Написать свой текст в буфер обмена по запросу.
+- Может быть запущен на 100% локально!!!
 
-**Here is a demo video of me using it with Llama3** https://www.reddit.com/r/LocalLLaMA/comments/1ca510h/voice_chatting_with_llama_3_8b/
+### Случаи использования:
+Я часто использую AlwaysReddy для следующих целей:
+- Когда я только что изучил новую концепцию, я часто объясняю ее вслух AlwaysReddy, и он сохраняет ее (примерно моими словами) в заметку.
+- «Как называется Х?» Часто я знаю, как примерно что-то описать, но не могу вспомнить, как это называется. AlwaysReddy помогает быстро дать мне ответ без необходимости открывать браузер.
+- «Можете ли вы проверить текст в моем буфере обмена, прежде чем я его отправлю?»
+- «Судя по комментариям в моем буфере обмена, что пользователи r/LocalLLaMA думают о X?»
+- Быстрые записи в журнале: я быстро перечисляю, что я сделал сегодня, и записываю запись в буфер обмена, прежде чем выключить компьютер на весь день.
 
-### Features:
-You interact with AlwaysReddy entirely with hotkeys, it has the ability to:
-- Voice chat with you via TTS and STT
-- Read from your clipboard (with `Ctrl + Alt + R + R` rapidly double tapping R). NOTE: Linux has a different hotkey!
-- Write text to your clipboard on request.
-- Can be run 100% locally!!!
 
-### Use cases:
-I often use AlwaysReddy for the following things:
-- When I have just learned a new concept I will often explain the concept aloud to AlwaysReddy and have it save the concept (in roughly my words) into a note.
-- "What is X called?" Often I know how to roughly describe something but cant remember what it is called, AlwaysReddy is handy for quickly giving me the answer without me having to open the browser.
-- "Can you proof read the text in my clipboard before I send it?"
-- "From the comments in my clipboard what do the r/LocalLLaMA users think of X?"
-- Quick journal entries, I speedily list what I have done today and get it to write a journal entry to my clipboard before I shutdown the computer for the day.
-
-## Supported LLM servers:
+## Поддерживаемые провайдеры LLM
 - OpenAI
 - Anthropic
 - TogetherAI
-- LM Studio (local) - [Setup Guide](https://youtu.be/b6MPdboJEfk)
-- Ollama (local) - [Setup Guide](https://youtu.be/BMYwT58rtxw?si=LHTTm85XFEJ5bMUD)
+- LM Studio (локальная) - [Руководство по установке](https://youtu.be/b6MPdboJEfk)
+- Ollama (локальный) - [Руководство по настройке](https://youtu.be/BMYwT58rtxw?si=LHTTm85XFEJ5bMUD)
 
-## Supported TTS systems:
-- Piper TTS (local and fast) [See how to change voice model](#how-to-add-new-voices-for-piper-tts)
-- OpenAI TTS API
+## Поддерживаемые системы TTS
+- Piper TTS (локальный и быстрый) [Узнайте, как изменить модель голоса](#how-to-add-new-voices-for-piper-tts)
+- API TTS OpenAI
 
-## Setup:
+## Настройка:
 
 <details>
-<summary>GPU Setup Instructions</summary>
+<summary>Инструкции по настройке графического процессора</summary>
 
-## GPU Acceleration
+## Ускорение графического процессора
 
-To use GPU acceleration with the faster-whisper API, follow these steps:
+Чтобы использовать ускорение графического процессора с API более быстрого шепота, выполните следующие действия:
 
-1. Check if CUDA is already installed:
-   - Open a terminal or command prompt.
-   - Run the following command:
+1. Проверьте, установлен ли уже CUDA:
+    - Откройте терминал или командную строку.
+    - Выполните следующую команду:
      ```
      nvcc --version
      ```
-   - If CUDA is installed, you should see output similar to:
+   - Если установлен CUDA, вы должны увидеть вывод, похожий на:
      ```
      nvcc: NVIDIA (R) Cuda compiler driver
      Copyright (c) 2005-2021 NVIDIA Corporation
@@ -77,101 +85,99 @@ To use GPU acceleration with the faster-whisper API, follow these steps:
      Cuda compilation tools, release 11.2, V11.2.152
      Build cuda_11.2.r11.2/compiler.29618528_0
      ```
-   - Note down the CUDA version (e.g., 11.2 in the example above).
+   - Запишите версию CUDA (например, 11.2 в приведенном выше примере).).
 
-2. If CUDA is not installed or you want to install a different version:
-   - Visit the official NVIDIA CUDA Toolkit website: [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit)
-   - Download and install the appropriate CUDA Toolkit version for your system.
+2. Если CUDA не установлен или вы хотите установить другую версию:
+    - Посетите официальный веб-сайт NVIDIA CUDA Toolkit: [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit).
+    - Загрузите и установите соответствующую версию CUDA Toolkit для вашей системы.
 
-3. Install PyTorch with CUDA support based on your system and CUDA version. Follow the instructions on the official PyTorch website: [PyTorch Installation](https://pytorch.org/get-started/locally/)
+3. Установите PyTorch с поддержкой CUDA в зависимости от вашей системы и версии CUDA. Следуйте инструкциям на официальном сайте PyTorch: [Установка PyTorch](https://pytorch.org/get-started/locally/)
 
-   Example command for CUDA 11.6:
+    Пример команды для CUDA 11.6:
    ```
    pip install torch==1.12.0+cu116 -f https://download.pytorch.org/whl/torch_stable.html
    ```
 
-4. In the `config.py` file, set `USE_GPU = True` to enable GPU acceleration.
-
-
+4. В файле config.py установите USE_GPU = True, чтобы включить ускорение графического процессора.
 
 </details>
 
-**Note:** Whenver you pull a new version of AlwaysReddy you may want to run the setup script again and copy the config file again as I am updating this project all the time and often the contexts of the config.py change.
+**Кстати:** Всякий раз, когда вы получаете новую версию AlwaysReddy, вам может потребоваться снова запустить сценарий установки и снова скопировать файл конфигурации, поскольку я постоянно обновляю этот проект, и часто контекст config.py меняется.
 
-### Setup for Windows:
+### Настройка для Windows:
 
-1. Clone this repo with `git clone https://github.com/ILikeAI/AlwaysReddy`
-2. cd into the directory `cd AlwaysReddy`
-3. Create a virtual environment with `python -m venv venv`-- This step is imortant, make sure to name it exactly `venv`
-4. Activate the virtual environment: `venv\Scripts\activate`
-5. Install requirements with `pip install -r requirements.txt`. Also run `pip install -r faster_whisper_requirements.txt` if you want to run whisper locally. - check the setup steps here if you have troubles using local whisper https://github.com/m-bain/whisperX
-6. Run the setup script with `python setup.py`. This will also create a run file `run_AlwaysReddy.bat`.
-7. Open the `config.py` and `.env` files and update them with your settings and API key.
-8. Run the assistant with `run_AlwaysReddy.bat` or `python main.py`. The run file will automatically activate the virtual environment.
+1. Клонируйте этот репозиторий с помощью `git clone https://github.com/ILikeAI/AlwaysReddy`.
+2. Перейдите в каталог `cd AlwaysReddy`
+3. Создайте виртуальную среду с помощью `python -m venv venv`. Этот шаг важен, обязательно назовите ее именно `venv`.
+4. Активируйте виртуальную среду: `venv\Scripts\activate`
+5. Установите требования с помощью `pip install -r requirements.txt`. Также запустите `pip install -r fast_whisper_requirements.txt`, если вы хотите запустить whisper локально. 
+6. Запустите сценарий установки с помощью `python setup.py`. Это также создаст файл запуска run_AlwaysReddy.bat.
+7. Откройте файлы config.py и .env и обновите их, указав свои настройки и ключ API.
+8. Запустите помощник с помощью `run_AlwaysReddy.bat` или `python main.py`. Запущенный файл автоматически активирует виртуальную среду.
 
-If you get an error saying you need to install ffmpeg, try the steps here: https://github.com/openai/whisper#setup
+Если вы получили сообщение об ошибке, сообщающее, что вам необходимо установить ffmpeg, попробуйте выполнить следующие действия: https://github.com/openai/whisper#setup.
 
-### Setup for Linux:
-Linux support is super experimental but its working for me, contact me if you have any trouble.
+### Настройка для Linux:
+Поддержка Linux является суперэкспериментальной, но у меня она работает, свяжитесь со мной, если у вас возникнут проблемы.
 
-1. Clone this repo with `git clone https://github.com/ILikeAI/AlwaysReddy`
-2. cd into the directory `cd AlwaysReddy`
-3. Create a virtual environment with `python3 -m venv venv`-- This step is imortant, make sure to name it exactly `venv`
-4. Activate the virtual environment: `source venv/bin/activate`
-5. Install requirements with `pip install -r requirements.txt`. Also run `pip install -r faster_whisper_requirements.txt` if you want to run whisper locally. - check the setup steps here if you have troubles using local whisper https://github.com/m-bain/whisperX
-6. Run the setup script with `python3 setup.py`. This will also create a run file `run_AlwaysReddy.sh`.
-7. Open the `config.py` and `.env` files and update them with your settings and API key.
-8. Run the assistant with `./run_AlwaysReddy.sh` or `python3 main.py`. The run file will automatically activate the virtual environment.
+1. Клонируйте этот репозиторий с помощью `git clone https://github.com/ILikeAI/AlwaysReddy`.
+2. перейдите в каталог `cd AlwaysReddy`
+3. Создайте виртуальную среду с помощью `python3 -m venv venv`. Этот шаг важен, обязательно назовите ее именно `venv`.
+4. Активируйте виртуальную среду: `source venv/bin/activate`
+5. Установите требования с помощью `pip install -r require.txt`. Также запустите `pip install -r fast_whisper_requirements.txt`, если вы хотите запустить whisper локально. 
+6. Запустите сценарий установки с помощью `python3 setup.py`. Это также создаст файл запуска run_AlwaysReddy.sh.
+7. Откройте файлы config.py и .env и обновите их, указав свои настройки и ключ API.
+8. Запустите помощник с помощью `./run_AlwaysReddy.sh` или `python3 main.py`. Запущенный файл автоматически активирует виртуальную среду.
 
-Please note that on linux we are using the pynput library which does not let us use space or tab in our hotkeys.
+Обратите внимание, что в Linux мы используем библиотеку Pynput, которая не позволяет нам использовать пробел или табуляцию в наших горячих клавишах.
 
-If you get an error saying you need to install ffmpeg, try the steps here: https://github.com/openai/whisper#setup
+Если вы получили сообщение об ошибке, сообщающее, что вам необходимо установить ffmpeg, попробуйте выполнить следующие действия: https://github.com/openai/whisper#setup.
 
-## Known Issues:
-- On linux it only detects hotkey presses when the application is in foucs, this is a major issue as the whole point of the project is to have it run in the background, if you want to help out this would be a great place to start poking around!
+## Известные проблемы:
+- В Linux он обнаруживает нажатия горячих клавиш только тогда, когда приложение находится в фокусе. Это серьезная проблема, поскольку весь смысл проекта заключается в том, чтобы он работал в фоновом режиме. Если вы хотите помочь, это будет здорово!
 
-## Troubleshooting:
-If you have issues try deleting the venv folder and starting again.
-Set VERBOSE = True in the config to get more detailed logs and error traces
+## Дополнительные логи:
+Если у вас возникли проблемы, попробуйте удалить папку venv и начать заново.
+Установите VERBOSE = True в конфигурации, чтобы получить более подробные журналы и трассировки ошибок.
 
-## How to:
-### How to use AlwaysReddy:
-There are currently only main 2 actions:
+## Как:
+### Как использовать AlwaysReddy:
+На данный момент есть только 2 основных действия:
 
-Voice chat:
-- Press `Ctrl + Alt + R`  to start dictating, you can talk for as long as you want, then press `Ctrl + Alt + R` again to stop recording, a few seconds later you will get a voice response from the AIal
+Голосовой чат:
+- Нажмите `Ctrl + Alt + R`, чтобы начать диктовку, вы можете говорить сколько угодно долго, затем снова нажмите `Ctrl + Alt + R`, чтобы остановить запись, через несколько секунд вы получите голосовой ответ.
 
-Voice chat with context of your clipboard:
-- Double tap `Ctrl + Alt + R` (or just hold `Ctrl + Alt` and quickly press `R` Twice) This will give the AI the content of your clipboard so you can ask it to reference it, rewrite it, answer questions from its contents... whatever you like! 
-- Clear the assistants memory with `Ctrl + Alt + W`.
-- Cancel recording or TTS with `Ctrl + Alt + E`
+Голосовой чат с контекстом вашего буфера обмена:
+- Дважды нажмите «Ctrl + Alt + R» (или просто удерживайте «Ctrl + Alt» и дважды быстро нажмите «R»). Это предоставит ИИ содержимое вашего буфера обмена, чтобы вы могли попросить его сослаться на него, переписать его, ответить. вопросы из его содержания... как хотите!
+- Очистите память помощников с помощью `Ctrl+Alt+W`.
+- Отмените запись или TTS с помощью `Ctrl + Alt + E`
 
-**Please let me know if you think of better hotkey defaults!**
+**Пожалуйста, дайте мне знать, если вы думаете о лучших настройках горячих клавиш по умолчанию!**
 
-All hotkeys can be edited in config.py
+Все горячие клавиши можно редактировать в config.py.
 
 
-### How to add new voices for Piper TTS:
-1. Go to https://huggingface.co/rhasspy/piper-voices/tree/main and navigate to your desired language.
-2. Click on the name of the voice you want to try. There are different sized models available; I suggest using the medium size as it's pretty fast but still sounds great (for a locally run model).
-3. Listen to the sample in the "sample" folder to ensure you like the voice.
-4. Download the `.onnx` and `.json` files for the chosen voice.
-5. Create a new folder in the `piper_tts\voices` directory and give it a descriptive name. You will need to enter the name of this folder into the `config.py` file. For example: `PIPER_VOICE = "default_female_voice"`.
-6. Move the two downloaded files (`.onnx` and `.json`) into your newly created folder within the `piper_tts\voices` directory.
+### Как добавить новые голоса для Piper TTS:
+1. Перейдите на https://huggingface.co/rhasspy/piper-voices/tree/main и выберите нужный язык.
+2. Нажмите на название голоса, который хотите опробовать. Доступны модели разных размеров; Я предлагаю использовать средний размер, поскольку он довольно быстрый, но при этом звучит великолепно (для локально запускаемой модели).
+3. Прослушайте образец в папке «образцы», чтобы убедиться, что голос вам нравится.
+4. Загрузите файлы `.onnx` и `.json` для выбранного голоса.
+5. Создайте новую папку в каталоге `piper_tts\voices` и дайте ей описательное имя. Вам нужно будет ввести имя этой папки в файл config.py. Например: `PIPER_VOICE = "default_female_voice"`.
+6. Переместите два загруженных файла (`.onnx` и `.json`) в вновь созданную папку в каталоге `piper_tts\voices`.
 
-### How to use local whisper transcription:
-1. Open the `config.py` file.
-2. Locate the "Transcription API Settings" section.
-3. Comment out the line `TRANSCRIPTION_API = "openai"` by adding a `#` at the beginning of the line.
-4. Uncomment the line `TRANSCRIPTION_API = "faster-whisper"` by removing the `#` at the beginning of the line.
-5. Adjust the `WHISPER_MODEL` and `TRANSCRIPTION_LANGUAGE` settings according to your preferences.
-6. Save the `config.py` file.
+### Как использовать STT локального whisper:
+1. Откройте файл `config.py`.
+2. Найдите раздел «Настройки API STT».
+3. Закомментируйте строку `TRANSCRIPTION_API = "openai"`, добавив `#` в начало строки.
+4. Раскомментируйте строку `TRANSCRIPTION_API = "faster-whisper"`, удалив `#` в начале строки.
+5. Настройте параметры «WHISPER_MODEL» и «TRANSCRIPTION_LANGUAGE» в соответствии со своими предпочтениями.
+6. Сохраните файл `config.py`.
 
-Here's an example of how your `config.py` file should look like for local whisper transcription:
+Вот пример того, как должен выглядеть ваш файл `config.py` для локального whisper:
 
-Available models: tiny.en, tiny, base.en, base, small.en, small, medium.en, medium, large-v1, large-v2, large-v3, large, distil-large-v2, distil-medium.en, distil-small.en, distil-large-v3
+Доступные модели: tiny.en, tiny, base.en, base, small.en, small, medium.en, medium, big-v1, big-v2, big-v3, big, distil-large-v2, distil-medium. .en, distil-small.en, distil-large-v3
 
-```python
+``` python
 ### Transcription API Settings ###
 
 ## OPENAI API TRANSCRIPTION EXAMPLE ##
@@ -185,10 +191,10 @@ WHISPER_MODEL = "tiny.en" # If you prefer not to use english set it to "tiny", i
 
 ```
 
-Note: The default whisper model is english only, try setting WHISPER_MODEL to 'tiny' or 'base' for other languages
+Примечание. Модель whisper по умолчанию предназначена только для английского языка. Попробуйте установить для WHISPER_MODEL значение 'tiny' или 'base' для других языков.
 
-### How to swap servers or models
-To swap models open the config.py file and uncomment the sections for the API you want to use. For example this is how you would use Claude 3 sonnet, if you wanted to use LM studio you would comment out the Anthropic section and uncomment the LM studio section.
+### Как поменять провайдера LLM и модель
+Чтобы поменять модели, откройте файл config.py и раскомментируйте разделы API, который вы хотите использовать. Например, вот как вы будете использовать сонет Клода 3: если вы хотите использовать студию LM, вы должны закомментировать раздел Anthropic и раскомментировать раздел студии LM.
 
 ```python
 ### COMPLETIONS API SETTINGS ###
@@ -210,12 +216,7 @@ COMPLETION_MODEL = "claude-3-sonnet-20240229"
 # COMPLETION_MODEL = "gpt-4-0125-preview"
 ```
 
-### How to use local TTS
-To use local TTS just open the config file and set `TTS_ENGINE="piper"`
+### Как использовать локальный TTS
+Чтобы использовать локальный TTS, просто откройте файл конфигурации и установите `TTS_ENGINE="piper"`
 
-## How to add AlwaysReddy to Startup List (Windows)
-To add AlwaysReddy to your startup list so it starts automatically on your computer startup, follow these steps:
-1. run `venv\Scripts\activate`
-2. Run `python setup.py`, follow the prompts, it will ask you if you want to add AlwaysReddy to the startup list, press Y the confrim
 
-If you want to remove AlwaysReddy from the startup list you can follow the same steps again, only say no when asked if you want to add AlwaysReddy to the startup list and it will ask if you would like to remove it, press Y.
