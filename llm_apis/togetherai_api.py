@@ -1,5 +1,13 @@
 from openai import OpenAI
 import os
+import config
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=config.LOGGING_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S')
+
 
 class TogetherAIClient:
     """Client for interacting with the TogetherAI API."""
@@ -37,9 +45,5 @@ class TogetherAIClient:
                 if content is not None:
                     yield content
         except Exception as e:
-            if self.verbose:
-                import traceback
-                traceback.print_exc()
-            else:
-                print(f"An error occurred streaming completion from TogetherAI API: {e}")
+            logging.exception(f"An error occurred streaming completion from TogetherAI API: {e}")
             raise RuntimeError(f"An error occurred streaming completion from TogetherAI API: {e}")

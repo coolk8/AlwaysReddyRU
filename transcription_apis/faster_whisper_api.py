@@ -1,13 +1,23 @@
+
+import logging
+import config
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=config.LOGGING_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S')
+
 try:
     from faster_whisper import WhisperModel
 except ModuleNotFoundError:
-    print("The faster_whisper module is not found. Please run 'pip install -r faster_whisper_requirements.txt' to install the required packages.")
+    logging.info("The faster_whisper module is not found. Please run 'pip install -r faster_whisper_requirements.txt' to install the required packages.")
     raise
 
 import os
 import config
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE" # This is a workaround for a bug 
+
 
 
 class FasterWhisperClient:
@@ -22,38 +32,31 @@ class FasterWhisperClient:
         self.beam_size = config.BEAM_SIZE
         self.verbose = verbose
 
-        if self.verbose:
-            print(f"Using faster-whisper model: {config.WHISPER_MODEL} and device: {self.device}")
+        logging.debug(f"Using faster-whisper model: {config.WHISPER_MODEL} and device: {self.device}")
 
     def transcribe_audio_file(self, file_path):
-        if self.verbose:
-            print(f"Transcribing audio file: {file_path}")
+        logging.debug(f"Transcribing audio file: {file_path}")
 
         try:
             segments, info = self.model.transcribe(
                 file_path,
-                beam_size=self.beam_size
+                beam_size=self.beam_size,
+                language=config.WHISPER_LANGUAGE
             )
 
             transcript = ""
             for segment in segments:
                 transcript += segment.text + " "
 
-            if self.verbose:
-                print(f"Detected language: {info.language} with probability {info.language_probability:.2f}")
+            logging.debug(f"Detected language: {info.language} with probability {info.language_probability:.2f}")
 
             return transcript.strip()
 
         except FileNotFoundError as e:
-            if self.verbose:
-                print(f"The audio file {file_path} was not found.")
+            logging.error(f"The audio file {file_path} was not found.")
             raise FileNotFoundError(f"The audio file {file_path} was not found.") from e
 
         except Exception as e:
-            if self.verbose:
-                import traceback
-                traceback.print_exc()
-            else:
-                print(f"An error occurred during the transcription process: {e}")
+            logging.error(f"An error occurred during the transcription process: {e}", exc_info=True)
             raise Exception(f"An error occurred during the transcription process: {e}") from e
 

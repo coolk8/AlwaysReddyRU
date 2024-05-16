@@ -1,6 +1,13 @@
 import openai
 import os
 from pydub import AudioSegment
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=config.LOGGING_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S')
+
 
 class OpenAIClient:
     def __init__(self, verbose=False):
@@ -42,7 +49,6 @@ class OpenAIClient:
                 # Delete the temporary chunk file
                 os.remove(temp_chunk_path)
 
-        if self.verbose:
-            print(f"Transcription successful for file: {file_path}")
+        logging.debug(f"Transcription successful for file: {file_path}")
 
         return transcript

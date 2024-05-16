@@ -2,6 +2,13 @@ import config
 import re
 from utils import to_clipboard
 
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=config.LOGGING_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S')
+
 class CompletionManager:
     def __init__(self, TTS_client, parent_client, verbose=False):
         """Initialize the CompletionManager with the TTS client."""
@@ -40,7 +47,7 @@ class CompletionManager:
             if hasattr(config, 'LM_STUDIO_API_BASE_URL'):
                 self.client = LM_StudioClient(base_url=config.LM_STUDIO_API_BASE_URL, verbose=self.verbose)
             else:
-                print("No LM_STUDIO_API_BASE_URL found in config.py, using default")
+                logging.info("No LM_STUDIO_API_BASE_URL found in config.py, using default")
                 self.client = LM_StudioClient(verbose=self.verbose)
 
         elif config.COMPLETIONS_API == "ollama":
@@ -49,7 +56,7 @@ class CompletionManager:
                 self.client = OllamaClient(base_url=config.OLLAMA_API_BASE_URL, verbose=self.verbose)
                 
             else:
-                print("No OLLAMA_API_BASE_URL found in config.py, using default")
+                logging.info("No OLLAMA_API_BASE_URL found in config.py, using default")
                 self.client = OllamaClient(verbose=self.verbose)
         else:
             raise ValueError("Unsupported completion API service configured")
@@ -79,17 +86,12 @@ class CompletionManager:
                 elif type == "clipboard_text":
                     to_clipboard(content)
             
-            if self.verbose:
-                print(f"Completion successful. Full response: {self.full_response}")
+            logging.debug(f"Completion successful. Full response: {self.full_response}")
             
             return self.full_response
     
         except Exception as e:
-            if self.verbose:
-                import traceback
-                traceback.print_exc()
-            else:
-                print(f"An error occurred while getting completion: {e}")
+            logging.exception(f"An error occurred while getting completion: {e}")
             return None
         
     def stream_sentences_from_chunks(self, chunks_stream, clip_start_marker="-CLIPSTART-", clip_end_marker="-CLIPEND-"):

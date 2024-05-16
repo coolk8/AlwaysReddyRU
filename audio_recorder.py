@@ -8,6 +8,12 @@ import wave
 import time
 import sys
 from ctypes import *
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=config.LOGGING_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 class AudioRecorder:
     """A class to handle the recording of audio using the PyAudio library."""
@@ -39,11 +45,7 @@ class AudioRecorder:
                                           rate=config.FS, input=True,
                                           frames_per_buffer=512, start=False)
         except Exception as e:
-            if self.verbose:
-                import traceback
-                traceback.print_exc()
-            else:
-                print(f"Failed to open audio stream: {e}")
+            logging.exception(f"Failed to open audio stream: {e}")
 
     def py_error_handler(self, filename, line, function, err, fmt):
         """A custom error handler to suppress ALSA error messages."""
@@ -63,15 +65,10 @@ class AudioRecorder:
             try:
                 self.stream.start_stream()
                 self.record_thread.start()
-                if self.verbose:
-                    print("Recording started...")
+                logging.debug("Recording started...")
             except Exception as e:
                 self.recording = False
-                if self.verbose:
-                    import traceback
-                    traceback.print_exc()
-                else:
-                    print(f"Failed to start recording: {e}")
+                logging.exception(f"Failed to start recording: {e}")
 
     @property
     def duration(self):
@@ -89,11 +86,7 @@ class AudioRecorder:
 
         except Exception as e:
             self.recording = False
-            if self.verbose:
-                import traceback
-                traceback.print_exc()
-            else:
-                print(f"Error during recording: {e}")
+            logging.exception(f"Error during recording: {e}")
 
     def stop_recording(self, cancel=False):
         """
@@ -124,15 +117,10 @@ class AudioRecorder:
                     wf.setsampwidth(self.audio.get_sample_size(pyaudio.paInt16))
                     wf.setframerate(config.FS)
                     wf.writeframes(recording.tobytes())
-                if self.verbose:
-                    print(f"Recording saved to {filename}")
+                logging.debug(f"Recording saved to {filename}")
 
             except Exception as e:
-                if self.verbose:
-                    import traceback
-                    traceback.print_exc()
-                else:
-                    print(f"Failed to save recording: {e}")
+                logging.exception(f"Failed to save recording: {e}")
 
     def __del__(self):
         """Clean up resources when the AudioRecorder is deleted."""

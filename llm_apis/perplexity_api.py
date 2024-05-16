@@ -1,6 +1,13 @@
 import requests
 import os
 import json
+import config
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=config.LOGGING_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 class PerplexityClient:
     """Client for interacting with the Perplexity AI API."""
@@ -44,28 +51,6 @@ class PerplexityClient:
             message_content = data['choices'][0]['message']['content']
             yield message_content
         except Exception as e:
-            if self.verbose:
-                import traceback
-                traceback.print_exc()
-            else:
-                print(f"An error occurred streaming completion from Perplexity AI API: {e}")
+            logging.exception(f"An error occurred streaming completion from Perplexity AI API: {e}")
             raise RuntimeError(f"An error occurred streaming completion from Perplexity AI API: {e}")
 
-# Test the PerplexityClient
-if __name__ == "__main__":
-    client = PerplexityClient(verbose=True)
-    messages = [
-        {
-            "role": "system",
-            "content": "Be precise and concise."
-        },
-        {
-            "role": "user",
-            "content": "What is the current price of Tesla stock?"
-        }
-    ]
-    model = "llama-3-sonar-small-32k-online"
-
-    print("Response:")
-    for chunk in client.stream_completion(messages, model):
-        print(chunk)

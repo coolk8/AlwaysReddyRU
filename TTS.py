@@ -5,6 +5,12 @@ import config
 import tempfile
 import pyaudio
 import wave
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=config.LOGGING_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 class TTS:
     """
@@ -37,7 +43,10 @@ class TTS:
             self.tts_client = PiperTTSClient(verbose=self.verbose)
         elif self.service == "silero":
             from TTS_apis.silero_api import SileroTTSClient
-            self.tts_client = SileroTTSClient(verbose=self.verbose)            
+            self.tts_client = SileroTTSClient(verbose=self.verbose) 
+        elif self.service == "vosk":
+            from TTS_apis.vosk_api import VoskTTSClient
+            self.tts_client = VoskTTSClient(verbose=self.verbose)                             
         else:
             raise ValueError("Unsupported TTS engine configured")
 
@@ -73,8 +82,7 @@ class TTS:
             try:
                 os.makedirs(output_dir)
             except OSError as e:
-                if self.verbose:
-                    print(f"Error creating output directory {output_dir}: {e}")
+                logging.error(f"Error creating output directory {output_dir}: {e}")
                 self.queing = False
                 return
     
@@ -89,8 +97,7 @@ class TTS:
             
             # If the TTS was successful, add the output file to the queue
             if result == "success":
-                if self.verbose:
-                    print(f"Running TTS: {sentence}")
+                logging.debug(f"Running TTS: {sentence}")
                 
                 # If the stop flag is set, return early
                 if self.parent_client.stop_response:
@@ -98,15 +105,10 @@ class TTS:
                 
                 self.temp_files.append(temp_output_file)
     
-                if self.verbose:
-                    print("Adding to queue")
+                logging.debug("Adding to queue")
                 self.audio_queue.put((temp_output_file, sentence))
         except Exception as e:
-            if self.verbose:
-                import traceback
-                traceback.print_exc()
-            else:
-                print(f"Error during TTS processing: {e}")
+            logging.exception(f"Error during TTS processing: {e}")
     
         # Set queuing flag to False
         self.queing = False
@@ -159,12 +161,10 @@ class TTS:
                         self.playback_stopped.set()
 
             except Exception as e:
-                if self.verbose:
-                    print(f"Error playing audio: {e}")
+                logging.exception(f"Error playing audio: {e}")
                 continue
 
-            if self.verbose:
-                print(f"Playing audio: {sentence}")
+            logging.debug(f"Playing audio: {sentence}")
             self.last_sentence_spoken = sentence
             # Mark the task as done in the queue
             self.audio_queue.task_done()
@@ -177,8 +177,7 @@ class TTS:
                     if file_path in self.temp_files:
                         self.temp_files.remove(file_path)
             except Exception as e:
-                if self.verbose:
-                    print(f"Error deleting file {file_path}: {e}")
+                logging.exception(f"Error deleting file {file_path}: {e}")
 
         # Set the running TTS flag to False
         self.running_tts = False
@@ -189,16 +188,14 @@ class TTS:
                 if file.endswith(".wav") or file.endswith(".mp3"):
                     os.remove(os.path.join(config.AUDIO_FILE_DIR, file))
         except Exception as e:
-            if self.verbose:
-                print(f"Error deleting leftover files: {e}")
+            logging.exception(f"Error deleting leftover files: {e}")
 
     def stop(self):
         """
         Stop the TTS process and clean up any temporary files.
         """
         # Print a message indicating that the TTS process is stopping
-        if self.verbose:
-            print("Stopping TTS")
+        logging.debug("Stopping TTS")
 
         # Set the stop_playback flag to signal the play_audio thread to stop
         self.stop_playback = True
@@ -249,5 +246,4 @@ class TTS:
                         self.temp_files.remove(temp_file)
                 except PermissionError as e:
                     # If a permission error occurs, print a message
-                    if self.verbose:
-                        print(f"Permission denied error when trying to delete {temp_file}: {e}")
+                    logging.error(f"Permission denied error when trying to delete {temp_file}: {e}")

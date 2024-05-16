@@ -2,6 +2,12 @@ import os
 from dotenv import load_dotenv
 from config import AUDIO_FILE_DIR
 import config
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=config.LOGGING_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 # Load .env file if present
 load_dotenv()
@@ -47,11 +53,9 @@ class TranscriptionManager:
             return transcript
         
         except FileNotFoundError as e:
-            if self.verbose:
-                print(f"The audio file {file_path} was not found.")
+            logging.error(f"The audio file {file_path} was not found.")
             raise FileNotFoundError(f"The audio file {file_path} was not found.") from e
         
         except Exception as e:
-            if self.verbose:
-                print(f"An error occurred during the transcription process: {e}")
+            logging.exception(f"An error occurred during the transcription process: {e}")
             raise Exception(f"An error occurred during the transcription process: {e}") from e

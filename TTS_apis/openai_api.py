@@ -1,6 +1,12 @@
 from openai import OpenAI
 import config
 import utils
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=config.LOGGING_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 class OpenAITTSClient:
     def __init__(self, verbose=False):
@@ -24,8 +30,7 @@ class OpenAITTSClient:
         
         # If there is no text after illegal characters are stripped
         if not text_to_speak.strip():
-            if self.verbose:
-                print("No text to speak after sanitization.")
+            logging.debug("No text to speak after sanitization.")
             return "failed"
         
         try:
@@ -41,13 +46,8 @@ class OpenAITTSClient:
                 for chunk in spoken_response.iter_bytes(chunk_size=4096):
                     f.write(chunk)
 
-            if self.verbose:
-                print(f"OpenAI TTS completed successfully.")
+            logging.debug(f"OpenAI TTS completed successfully.")
             return "success"
         except Exception as e:
-            if self.verbose:
-                import traceback
-                traceback.print_exc()
-            else:
-                print(f"Error occurred while getting OpenAI TTS: {e}")
+            logging.exception(f"Error occurred while getting OpenAI TTS: {e}")
             return "failed"

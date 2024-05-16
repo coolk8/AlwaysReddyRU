@@ -1,5 +1,13 @@
 from openai import OpenAI
 
+import logging
+import config
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=config.LOGGING_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S')
+
 class LM_StudioClient:
     """Client for interacting with LM studio using a local server and openai lib."""
     def __init__(self, base_url="http://localhost:1234/v1", verbose=False):
@@ -33,20 +41,6 @@ class LM_StudioClient:
                 if content:
                     yield content
         except Exception as e:
-            if self.verbose:
-                import traceback
-                traceback.print_exc()
-            else:
-                print(f"An error occurred streaming completion from LM studio: {e}")
+            logging.exception(f"An error occurred streaming completion from LM studio: {e}")
             raise RuntimeError(f"An error occurred streaming completion from LM studio: {e}")
 
-# # Example usage
-# if __name__ == "__main__":
-#     client = LM_StudioClient(base_url="http://localhost:1234/v1", verbose=True)
-#     messages = [
-#         {"role": "system", "content": "Always answer in rhymes."},
-#         {"role": "user", "content": "Introduce yourself."}
-#     ]
-#     model = "local-model"
-#     for content in client.stream_completion(messages, model):
-#         print(content)

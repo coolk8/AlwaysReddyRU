@@ -7,6 +7,13 @@ import pyaudio
 import wave
 import numpy as np
 
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=config.LOGGING_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S')
+
 def play_sound_file(file_name, volume, verbose=False):
     try:
         # Load the audio file using wave
@@ -46,23 +53,17 @@ def play_sound_file(file_name, volume, verbose=False):
             p.terminate()
 
     except FileNotFoundError as e:
-        if verbose:
-            print(f"The sound file {file_name} was not found.")
+        logging.debug(f"The sound file {file_name} was not found.")
         raise FileNotFoundError(f"The sound file {file_name} was not found.") from e
     except Exception as e:
-        if verbose:
-            import traceback
-            traceback.print_exc()
-        else:
-            print(f"An error occurred while playing the sound file: {e}")
+        logging.exception(f"An error occurred while playing the sound file: {e}")
         raise Exception(f"An error occurred while playing the sound file: {e}") from e
 
 def play_sound_FX(name, volume=1.0, verbose=False):
     try:
         volume *= config.BASE_VOLUME
         sound_file_name = f"sounds/recording-{name}"
-        if verbose:
-            print(f"Playing sound FX: {sound_file_name}")
+        logging.debug(f"Playing sound FX: {sound_file_name}")
         if os.path.exists(sound_file_name + ".wav"):
             sound_file_name += ".wav"
         elif os.path.exists(sound_file_name + ".mp3"):
@@ -74,8 +75,4 @@ def play_sound_FX(name, volume=1.0, verbose=False):
         sound_thread.start()
         sound_thread.join()  # Wait for the thread to complete
     except Exception as e:
-        if verbose:
-            import traceback
-            traceback.print_exc()
-        else:
-            print(f"An error occurred while attempting to play sound FX: {e}")
+        logging.exception(f"An error occurred while attempting to play sound FX: {e}")

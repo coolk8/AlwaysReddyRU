@@ -9,6 +9,12 @@ from soundfx import play_sound_FX
 from utils import read_clipboard, count_tokens, trim_messages
 import config
 from prompt import prompts
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=config.LOGGING_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 class AlwaysReddy:
     def __init__(self):
@@ -33,7 +39,7 @@ class AlwaysReddy:
     def clear_messages(self):
         """Clear the message history."""
         # TODO Eventually i would like to keep track of conversations and be able to switch between them
-        print("Clearing messages...")
+        logging.info("Clearing messages...")
         self.messages = prompts[config.ACTIVE_PROMPT]["messages"].copy()
 
     def was_double_tapped(self, threshold=0.2):
@@ -53,8 +59,7 @@ class AlwaysReddy:
 
     def start_recording(self):
         """Start the audio recording process and set a timeout for automatic stopping."""
-        if self.verbose:
-            print("Starting recording...")
+        logging.debug("Starting recording...")
         self.is_recording = True
         self.recorder.start_recording()
 
@@ -70,8 +75,7 @@ class AlwaysReddy:
             self.recording_timeout_timer.cancel()
 
         if self.is_recording:
-            if self.verbose:
-                print("Stopping recording...")
+            logging.debug("Stopping recording...")
             play_sound_FX("end", volume=config.END_SOUND_VOLUME, verbose=self.verbose)
             self.is_recording = False
             self.recorder.stop_recording()
@@ -79,8 +83,7 @@ class AlwaysReddy:
 
             # If the recording is too short, ignore it
             if self.recorder.duration < config.MIN_RECORDING_DURATION:
-                if self.verbose:
-                    print("Recording is too short or file does not exist, ignoring...")
+                logging.info("Recording is too short or file does not exist, ignoring...")
                 return
 
             try:
@@ -92,11 +95,7 @@ class AlwaysReddy:
                     self.handle_response(transcript)
 
             except Exception as e:
-                if self.verbose:
-                    import traceback
-                    traceback.print_exc()
-                else:
-                    print(f"An error occurred during transcription: {e}")
+                logging.exception(f"An error occurred during transcription: {e}")
 
     def how_long_to_speak_first_word(self, first_word_time):
         """
@@ -107,27 +106,22 @@ class AlwaysReddy:
             first_word_time (float): The timestamp of the first word spoken by TTS.
         """
         if self.recording_stop_time:
-            if self.verbose:
-                print(f"Response delay for first word: {first_word_time - self.recording_stop_time} seconds")
+            logging.debug(f"Response delay for first word: {first_word_time - self.recording_stop_time} seconds")
             self.recording_stop_time = None
 
     def cancel_recording(self):
         """Cancel the current recording."""
         if self.is_recording:
-            if self.verbose:
-                print("Cancelling recording...")
+            logging.debug("Cancelling recording...")
             self.recorder.stop_recording(cancel=True)
-            if self.verbose:
-                print("Recording cancelled.")
+            logging.info("Recording cancelled.")
             self.is_recording = False
 
     def cancel_tts(self):
         """Cancel the current TTS."""
-        if self.verbose:
-            print("Stopping text-to-speech...")
+        logging.debug("Stopping text-to-speech...")
         self.tts.stop()
-        if self.verbose:
-            print("Text-to-speech cancelled.")
+        logging.info("Text-to-speech cancelled.")
 
     def cancel_all(self, silent=False):
         """Cancel the current recording and TTS."""
@@ -171,7 +165,7 @@ class AlwaysReddy:
             if self.clipboard_text:
                 self.messages.append({"role": "user", "content": transcript + f"\n\nTHE USER HAS THIS TEXT COPIED TO THEIR CLIPBOARD:\n```{self.clipboard_text}```"})
                 self.clipboard_text = None
-                print("\nUsing the text in your clipboard...")
+                logging.info("\nUsing the text in your clipboard...")
             else:
                 self.messages.append({"role": "user", "content": transcript})
 
@@ -180,7 +174,7 @@ class AlwaysReddy:
                 self.messages = trim_messages(self.messages, config.MAX_TOKENS)
 
 
-            print("\nTranscription:\n", transcript)
+            logging.info(f'\nTranscription:\n {transcript}' )
 
             # Make sure the user hasn't cut off the response
             if self.stop_response:
@@ -195,8 +189,7 @@ class AlwaysReddy:
                 time.sleep(0.001)
 
             if not response:
-                if self.verbose:
-                    print("No response generated.")
+                logging.info("No response generated.")
                 # If the response is empty, remove the last message
                 self.messages = self.messages[:-1]
                 return
@@ -216,20 +209,15 @@ class AlwaysReddy:
 
             self.messages.append({"role": "assistant", "content": response})
 
-            print("\nResponse:\n", response)
+            logging.info(f'\nResponse:\n, {response}')
 
         except Exception as e:
-            if self.verbose:
-                import traceback
-                traceback.print_exc()
-            else:
-                print(f"An error occurred while handling the response: {e}")
+            logging.exception(f"An error occurred while handling the response: {e}")
 
     def handle_hotkey(self):
         """Handle the hotkey press for starting or stopping recording."""
         if self.tts.running_tts:
-            if self.verbose:
-                print("TTS is running, stopping...")
+            logging.debug("TTS is running, stopping...")
             self.tts.stop()
 
         if self.is_recording:
@@ -259,8 +247,7 @@ class AlwaysReddy:
         Wrapper for the hotkey handler to include double tap detection for clipboard usage.
         """
         use_clipboard = self.was_double_tapped()
-        if self.verbose:
-            print("use_clipboard:", use_clipboard)
+        logging.debug(f'use_clipboard: {use_clipboard}')
         if use_clipboard:
             try:
                 self.clipboard_text = read_clipboard()
@@ -269,7 +256,7 @@ class AlwaysReddy:
                     import traceback
                     traceback.print_exc()
                 else:
-                    print(f"Failed to read from clipboard: {e}")
+                    logging.info(f"Failed to read from clipboard: {e}")
 
         if self.timer is not None:
             self.timer.cancel()
@@ -286,7 +273,7 @@ class AlwaysReddy:
         keyboard_handler.add_hotkey(config.CANCEL_HOTKEY, self.cancel_all)
         keyboard_handler.add_hotkey(config.CLEAR_HISTORY_HOTKEY, self.clear_messages)
 
-        print(f"\n\nPress '{config.RECORD_HOTKEY}' to start recording, press again to stop and transcribe.\nDouble tap to the record hotkey to give AlwaysReddy the content currently copied in your clipboard.\nPress '{config.CANCEL_HOTKEY}' to cancel recording.\nPress '{config.CLEAR_HISTORY_HOTKEY}' to clear the chat history.")
+        logging.info(f"\n\nPress '{config.RECORD_HOTKEY}' to start recording, press again to stop and transcribe.\nDouble tap to the record hotkey to give AlwaysReddy the content currently copied in your clipboard.\nPress '{config.CANCEL_HOTKEY}' to cancel recording.\nPress '{config.CLEAR_HISTORY_HOTKEY}' to clear the chat history.")
 
         keyboard_handler.start()
 
@@ -294,8 +281,4 @@ if __name__ == "__main__":
     try:
         AlwaysReddy().run()
     except Exception as e:
-        if config.VERBOSE:
-            import traceback
-            traceback.print_exc()
-        else:
-            print(f"Failed to start the recorder: {e}")
+        logging.exception(f"Failed to start the recorder: {e}")

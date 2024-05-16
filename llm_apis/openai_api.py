@@ -1,5 +1,12 @@
 from openai import OpenAI
 import os
+import config
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=config.LOGGING_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 class OpenAIClient:
     """Client for interacting with OpenAI API."""
@@ -33,9 +40,5 @@ class OpenAIClient:
                 if content != None:
                     yield content
         except Exception as e:
-            if self.verbose:
-                import traceback
-                traceback.print_exc()
-            else:
-                print(f"An error occurred streaming completion from OpenAI: {e}")
+            logging.exception(f"An error occurred streaming completion from OpenAI: {e}")
             raise RuntimeError(f"An error occurred streaming completion from OpenAI: {e}")

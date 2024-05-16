@@ -1,5 +1,13 @@
 from anthropic import Anthropic
 import os
+import config
+
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=config.LOGGING_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 class AnthropicClient:
     def __init__(self, verbose=False):
@@ -36,9 +44,5 @@ class AnthropicClient:
                 for text in stream.text_stream:
                     yield text
         except Exception as e:
-            if self.verbose:
-                import traceback
-                traceback.print_exc()
-            else:
-                print(f"An error occurred streaming completion from Anthropic API: {e}")
+            logging.exception(f"An error occurred streaming completion from Anthropic API: {e}")
             raise RuntimeError(f"An error occurred streaming completion from Anthropic API: {e}")

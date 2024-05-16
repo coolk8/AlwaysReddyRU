@@ -1,5 +1,11 @@
 import config
 import platform
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=config.LOGGING_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 operating_system = platform.system()
 if operating_system == "Windows":
@@ -31,7 +37,7 @@ def convert_to_pynput_format(hotkey):
 def check_space_usage(hotkey):
     """Check if 'space' is used in the hotkey and print a warning if so."""
     if 'space' in hotkey.split('+'):
-        print("\nWARNING: 'space' key does not work on linux systems with pynput library. "
+        logging.info("\nWARNING: 'space' key does not work on linux systems with pynput library. "
               "To set a new hotkey run the 'hotkey_config_GUI.py' script.\n")
 
 class KeyboardHandler:
@@ -53,14 +59,9 @@ class KeyboardLibraryHandler(KeyboardHandler):
             while True:
                 keyboard.wait()
         except KeyboardInterrupt:
-            if self.verbose:
-                print("Recorder stopped by user.")
+            logging.debug("Recorder stopped by user.")
         except Exception as e:
-            if self.verbose:
-                import traceback
-                traceback.print_exc()
-            else:
-                print(f"An error occurred: {e}")
+            logging.exception(f"An error occurred: {e}")
 
 class PynputHandler(KeyboardHandler):
     def __init__(self, verbose=False):
@@ -78,14 +79,9 @@ class PynputHandler(KeyboardHandler):
             try:
                 hotkey_listener.join()
             except KeyboardInterrupt:
-                if self.verbose:
-                    print("Recorder stopped by user.")
+                logging.debug("Recorder stopped by user.")
             except Exception as e:
-                if self.verbose:
-                    import traceback
-                    traceback.print_exc()
-                else:
-                    print(f"An error occurred: {e}")
+                logging.exception(f"An error occurred: {e}")
 
 def get_keyboard_handler(verbose=False):
     if operating_system == "Windows":

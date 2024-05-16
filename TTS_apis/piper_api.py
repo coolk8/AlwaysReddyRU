@@ -3,6 +3,12 @@ import subprocess
 import config
 import utils
 import platform
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=config.LOGGING_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 class PiperTTSClient:
     def __init__(self, verbose=False):
@@ -26,14 +32,13 @@ class PiperTTSClient:
 
         # If there's no text left after sanitization, return "failed"
         if not text_to_speak.strip():
-            if self.verbose:
-                print("No text to speak after sanitization.")
+            logging.debug("No text to speak after sanitization.")
             return "failed"
 
         # Determine the operating system
         operating_system = platform.system()
         if operating_system == "Windows":
-            piper_binary = os.path.join("piper_tts", "piper.exe")
+            piper_binary = os.path.join("piper_tts/windows_amd64/", "piper.exe")
         else:
             piper_binary = os.path.join("piper_tts", "piper")
 
@@ -42,8 +47,7 @@ class PiperTTSClient:
 
         # If the voice folder doesn't exist, return "failed"
         if not os.path.exists(voice_path):
-            if self.verbose:
-                print(f"Voice folder '{voice_folder}' does not exist.")
+            logging.debug(f"Voice folder '{voice_folder}' does not exist.")
             return "failed"
 
         # Find the model and JSON files in the voice folder
@@ -53,8 +57,7 @@ class PiperTTSClient:
 
         # If either the model or JSON file is missing, return "failed"
         if not model_path or not json_path:
-            if self.verbose:
-                print("Required voice files not found.")
+            logging.debug("Required voice files not found.")
             return "failed"
 
         try:
@@ -68,11 +71,9 @@ class PiperTTSClient:
             process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=(None if self.verbose else subprocess.DEVNULL), stderr=subprocess.STDOUT)
             process.communicate(text_to_speak.encode("utf-8"))
             process.wait()
-            if self.verbose:
-                print(f"Piper TTS command executed successfully.")
+            logging.debug(f"Piper TTS command executed successfully.")
             return "success"
         except subprocess.CalledProcessError as e:
             # If the command fails, print an error message and return "failed"
-            if self.verbose:
-                print(f"Error running Piper TTS command: {e}")
+            logging.error(f"Error running Piper TTS command: {e}")
             return "failed"

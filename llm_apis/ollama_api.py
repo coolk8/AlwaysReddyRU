@@ -1,6 +1,13 @@
 import requests
 import json
 import os
+import config
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=config.LOGGING_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 class OllamaClient:
     """Client for interacting with the Ollama API for streaming text completions."""
@@ -47,13 +54,8 @@ class OllamaClient:
                             response_data = json.loads(chunk)
                             yield response_data['message']['content']
                 else:
-                    if self.verbose:
-                        print(f"Request failed with status code {response.status_code}")
+                    logging.error(f"Request failed with status code {response.status_code}")
                     raise RuntimeError(f"Request failed with status code {response.status_code}")
         except Exception as e:
-            if self.verbose:
-                import traceback
-                traceback.print_exc()
-            else:
-                print(f"An error occurred streaming completion from Ollama API: {e}")
+            logging.exception(f"An error occurred streaming completion from Ollama API: {e}")
             raise RuntimeError(f"An error occurred streaming completion from Ollama API: {e}")
