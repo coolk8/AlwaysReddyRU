@@ -22,6 +22,7 @@ This is just a fork of great app https://github.com/ILikeAI/AlwaysReddy. Please 
 
  - 13.05.2024 - Форк оригинального проекта
  - 14.05.2024 - Добавлена первая версия поддержки [Silero TTS](https://github.com/snakers4/silero-models)
+ - 16.05.2024 - Добавлена первая весия поддержки [Vosk TTS](https://github.com/alphacep/vosk-tts)
 
 ## Todo:
 
